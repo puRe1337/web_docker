@@ -1,0 +1,2 @@
+-- CREATE DATABASE IF NOT EXISTS `web_test`;
+-- GRANT ALL ON `web_test`.* TO 'your_user'@'%';

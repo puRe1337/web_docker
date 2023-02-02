@@ -1,0 +1,58 @@
+version: "3.8"
+services:
+  app:
+    build:
+      args:
+        user: dscherer
+        uid: 1000
+      context: ./
+      dockerfile: ./docker/php8/Dockerfile
+    image: docker_laravel
+    container_name: laravel_app
+    restart: unless-stopped
+    working_dir: /var/www/
+    environment:
+      PHP_OPCACHE_VALIDATE_TIMESTAMPS: 1
+    volumes:
+      - ./:/var/www
+    networks:
+      - laravel
+
+  db:
+    image: mariadb:${MARIADB_VERSION}
+    container_name: laravel_db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker/data/mysql:/var/lib/mysql
+      - ./docker/mariadb:/docker-entrypoint-initdb.d
+    networks:
+      - laravel
+  nginx:
+    image: nginx:${NGINX_VERSION}
+    container_name: laravel-nginx
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - laravel
+  redis:
+    image: redis:${REDIS_VERSION}
+    container_name: laravel_redis
+    restart: unless-stopped
+    networks:
+      - laravel
+    volumes:
+      - ./docker/redis:/data
+networks:
+  laravel:
+    driver: bridge

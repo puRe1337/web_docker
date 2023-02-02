@@ -1,2 +1,8 @@
 # web_docker
-web server with nginx, php (imagemagick, ghostscript, ffmpeg, composer, node), redis, mariadb
+web server envoirnment with
+- nginx
+- php bundled with imagemagick, ghostscript, ffmpeg, composer, node for personal needs
+- redis
+- mariadb
+
+I personally used it with Laravel
